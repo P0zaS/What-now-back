@@ -1,0 +1,22 @@
+{
+  "name": "myapp_web",
+  "version": "1.0.0",
+  "description": "Web server about films and watchlist of each user",
+  "main": "app.js",
+  "scripts": {
+    "test": "test-app",
+    "run": "nodemon app.js"
+  },
+  "author": "Fernando Poza Ferragut",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.0.1",
+    "nodemon": "^2.0.20"
+  },
+  "type": "module"
+}
