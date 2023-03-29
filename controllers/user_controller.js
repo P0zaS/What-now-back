@@ -1,10 +1,11 @@
-import { ObjectId } from "mongodb";
 import {
   getAllUsers,
+  getAllAvatars,
   insertUser,
   getUserbyUsername,
   updateaUser,
   getUserbyId,
+  insertUserAvatar,
 } from "../services/users_service.js";
 
 export function userController(app) {
@@ -12,12 +13,14 @@ export function userController(app) {
     getAllUsers().then((users) => res.send(JSON.stringify(users)));
   });
   app.get("/userById/:id", (req, res) => {
-    getUserbyId(req.params.id).then((user) => res.send(JSON.stringify(user)));
+    getUserbyId(req.params.id)
+      .then((user) => res.send(JSON.stringify(user)))
+      .catch((err) => res.send(JSON.stringify(err)));
   });
   app.get("/userByUsername/:username", (req, res) => {
-    getUserbyUsername(req.params.username).then((users) =>
-      res.send(JSON.stringify(users))
-    );
+    getUserbyUsername(req.params.username)
+      .then((users) => res.send(JSON.stringify(users)))
+      .catch((err) => res.send(JSON.stringify(err)));
   });
   app.put("/user", (req, res) => {
     updateaUser(req.body)
@@ -40,5 +43,21 @@ export function userController(app) {
         res.status(400);
         res.send(err);
       });
+  });
+  app.post("/user/avatar", (req, res) => {
+    console.log(req.body);
+    insertUserAvatar(req.body)
+      .then((user) => {
+        res.status(200);
+        res.send(user);
+      })
+      .catch((err) => {
+        res.status(400);
+        res.send(err);
+      });
+  });
+  app.get("/user/avatar", (req, res) => {
+    console.log(req.body);
+    getAllAvatars().then((users) => res.send(JSON.stringify(users)));
   });
 }

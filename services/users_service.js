@@ -1,3 +1,9 @@
+import { ObjectId } from "mongodb";
+import {
+  createAvatar,
+  getAll_avatars,
+  findByUserId as avatarByUserId,
+} from "../repositories/avatar_repository.js";
 import {
   getAll,
   createUser,
@@ -16,7 +22,14 @@ export function getUserbyUsername(username) {
     if (username) {
       findByUserUsername(username)
         .then((user) => {
-          res(user);
+          avatarByUserId(user._id.toString())
+            .then((avatar) => {
+              console.log(avatar);
+              if (avatar) res({ user, avatar: avatar.avatar });
+
+              rej({ error: "Not found" });
+            })
+            .catch((err) => rej("User not found: " + JSON.stringify(err)));
         })
         .catch((err) => rej("User not found: " + JSON.stringify(err)));
     } else rej({ error: "Not found" });
@@ -28,7 +41,9 @@ export function getUserbyId(id) {
     if (id) {
       findByUserId(id)
         .then((user) => {
-          res(user);
+          avatarByUserId(id).then((avatar) => {
+            res({ user, avatar: avatar.avatar });
+          });
         })
         .catch((err) => rej("User not found: " + JSON.stringify(err)));
     } else rej({ error: "Not found" });
@@ -71,12 +86,34 @@ export function insertUser(user) {
     if (user && user.username && user.password) {
       hash(user.password).then((hashedPass) => {
         user.password = hashedPass;
-        createUser(user)
+        createUser({
+          username: user.username,
+          email: user.email,
+          password: user.password,
+        })
           .then((inserted) => {
             res(inserted);
           })
           .catch((err) => rej("Error at insert user: " + JSON.stringify(err)));
       });
+    } else {
+      rej({ error: "Syntax error" });
+    }
+  });
+}
+export function getAllAvatars() {
+  return getAll_avatars();
+}
+export function insertUserAvatar(user) {
+  return new Promise((res, rej) => {
+    if (user && user.id && user.binaryAvatar) {
+      createAvatar({ user_id: user.id, avatar: user.binaryAvatar })
+        .then((inserted) => {
+          res(inserted);
+        })
+        .catch((err) =>
+          rej("Error at insert user avatar: " + JSON.stringify(err))
+        );
     } else {
       rej({ error: "Syntax error" });
     }
