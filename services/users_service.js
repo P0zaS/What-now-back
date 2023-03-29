@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import {
   createAvatar,
   getAll_avatars,
@@ -26,8 +25,7 @@ export function getUserbyUsername(username) {
             .then((avatar) => {
               console.log(avatar);
               if (avatar) res({ user, avatar: avatar.avatar });
-
-              rej({ error: "Not found" });
+              else res({ user, avatar: '' });
             })
             .catch((err) => rej("User not found: " + JSON.stringify(err)));
         })
