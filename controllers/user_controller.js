@@ -45,7 +45,6 @@ export function userController(app) {
       });
   });
   app.post("/user/avatar", (req, res) => {
-    console.log(req.body);
     insertUserAvatar(req.body)
       .then((user) => {
         res.status(200);
@@ -57,7 +56,6 @@ export function userController(app) {
       });
   });
   app.get("/user/avatar", (req, res) => {
-    console.log(req.body);
     getAllAvatars().then((users) => res.send(JSON.stringify(users)));
   });
 }

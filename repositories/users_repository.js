@@ -32,7 +32,6 @@ export function findByUserUsername(username) {
       .findOne({ username: username })
       .then((user) => {
         client.close();
-        console.log(user);
         resolve(user);
       })
       .catch((err) => reject(err));
@@ -45,7 +44,6 @@ export function findByUserId(id) {
       .findOne({ _id: new ObjectId(id) })
       .then((user) => {
         client.close();
-        console.log(user);
         resolve(user);
       })
       .catch((err) => reject(err));
@@ -61,7 +59,6 @@ export function updateUser(user) {
       )
       .then((savedDocument) => {
         client.close();
-        console.log(user);
         resolve({ doc: savedDocument, username: user.username });
       })
       .catch((err) => reject(err));

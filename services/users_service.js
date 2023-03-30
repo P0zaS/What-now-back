@@ -2,6 +2,7 @@ import {
   createAvatar,
   getAll_avatars,
   findByUserId as avatarByUserId,
+  updateAvatar
 } from "../repositories/avatar_repository.js";
 import {
   getAll,
@@ -16,16 +17,14 @@ export function getAllUsers() {
   return getAll();
 }
 export function getUserbyUsername(username) {
-  console.log(username);
   return new Promise((res, rej) => {
     if (username) {
       findByUserUsername(username)
         .then((user) => {
           avatarByUserId(user._id.toString())
             .then((avatar) => {
-              console.log(avatar);
               if (avatar) res({ user, avatar: avatar.avatar });
-              else res({ user, avatar: '' });
+              else res({ user, avatar: "" });
             })
             .catch((err) => rej("User not found: " + JSON.stringify(err)));
         })
@@ -34,7 +33,6 @@ export function getUserbyUsername(username) {
   });
 }
 export function getUserbyId(id) {
-  console.log(id);
   return new Promise((res, rej) => {
     if (id) {
       findByUserId(id)
@@ -48,7 +46,6 @@ export function getUserbyId(id) {
   });
 }
 export function updateaUser(user) {
-  console.log(user);
   return new Promise((res, rej) => {
     if (user && user.username && user.email) {
       getUserbyId(user.id)
@@ -105,9 +102,26 @@ export function getAllAvatars() {
 export function insertUserAvatar(user) {
   return new Promise((res, rej) => {
     if (user && user.id && user.binaryAvatar) {
-      createAvatar({ user_id: user.id, avatar: user.binaryAvatar })
-        .then((inserted) => {
-          res(inserted);
+      avatarByUserId(user.id)
+        .then((userAvatar) => {
+          if (userAvatar == null) {
+            createAvatar({ user_id: user.id, avatar: user.binaryAvatar })
+              .then((inserted) => {
+                res(inserted);
+              })
+              .catch((err) =>
+                rej("Error at insert user avatar: " + JSON.stringify(err))
+              );
+          } else {
+            console.log(userAvatar, 'service');
+            updateAvatar({ id: userAvatar._id, user_id: user.id, avatar: user.binaryAvatar })
+              .then((updated) => {
+                res(updated);
+              })
+              .catch((err) =>
+                rej("Error at update user avatar: " + JSON.stringify(err))
+              );
+          }
         })
         .catch((err) =>
           rej("Error at insert user avatar: " + JSON.stringify(err))

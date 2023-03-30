@@ -25,27 +25,43 @@ export function getAll_avatars() {
   });
 }
 export function findByUserId(id) {
-    return new Promise((resolve, reject) => {
-      let [client, collection] = connect();
-      collection
-        .findOne({ user_id: id })
-        .then((user) => {
-          client.close();
-          console.log(user);
-          resolve(user);
-        })
-        .catch((err) => reject(err));
-    });
-  }
+  return new Promise((resolve, reject) => {
+    let [client, collection] = connect();
+    collection
+      .findOne({ user_id: id })
+      .then((user) => {
+        client.close();
+        resolve(user);
+      })
+      .catch((err) => reject(err));
+  });
+}
 export function createAvatar(user) {
-    return new Promise((resolve, reject) => {
-        let [client, collection] = connect();
-        collection
-          .insertOne(user)
-          .then((savedDocument) => {
-            client.close();
-            resolve(savedDocument);
-          })
-          .catch((err) => reject(err));
-      });
+  return new Promise((resolve, reject) => {
+    let [client, collection] = connect();
+    collection
+      .insertOne(user)
+      .then((savedDocument) => {
+        client.close();
+        resolve(savedDocument);
+      })
+      .catch((err) => reject(err));
+  });
+}
+export function updateAvatar(avatar) {
+  console.log(avatar);
+  return new Promise((resolve, reject) => {
+    let [client, collection] = connect();
+    collection
+      .replaceOne(
+        { user_id: avatar.user_id },
+        { _id: avatar.id, user_id: avatar.user_id, avatar: avatar.avatar }
+      )
+      .then((updatedDocument) => {
+        console.log(updatedDocument);
+        client.close();
+        resolve(updatedDocument);
+      })
+      .catch((err) => reject(err));
+  });
 }

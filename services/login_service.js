@@ -4,16 +4,13 @@ import bcrypt from "bcrypt"
 import { findByUserId } from '../repositories/avatar_repository.js'
 
 export function doLogin(login) {
-    console.log(login)
     return new Promise((res, rej) => {
         findByUserUsername(login.username)
             .then(user => {
-                console.log(user);
                 bcrypt.compare(login.password, user.password, function (err, result) {
                     if (result) {
                         let token = generateJWT(user);
                         findByUserId(user._id.toString()).then(avatar => {
-                            console.log(avatar);
                             if (avatar)
                                 res({ token, avatar: avatar.avatar })
                             else
