@@ -64,6 +64,20 @@ export function updateUser(user) {
       .catch((err) => reject(err));
   });
 }
+export function deleteUser(user) {
+  return new Promise((resolve, reject) => {
+    let [client, collection] = connect();
+    collection
+      .deleteOne(
+        { _id: new ObjectId(user.id) }
+      )
+      .then((deletedDocument) => {
+        client.close();
+        resolve({ doc: deletedDocument, username: user.username });
+      })
+      .catch((err) => reject(err));
+  });
+}
 export function createUser(user) {
   return new Promise((resolve, reject) => {
     let [client, collection] = connect();
