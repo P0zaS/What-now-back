@@ -51,14 +51,15 @@ export function updateaUser(user) {
     if (user && user.username && user.email) {
       getUserbyId(user.id)
         .then((userFound) => {
+          console.log(userFound);
           hash(user.password).then((hashedPass) => {
             if (
               user.password &&
               user.password != "" &&
-              hashedPass !== userFound.password
+              hashedPass !== userFound.user.password
             )
               user.password = hashedPass;
-            else user.password = userFound.password;
+            else user.password = userFound.user.password;
 
             updateUser(user)
               .then((updated) => {
