@@ -4,6 +4,7 @@ import cors from 'cors'
 import { userController } from './controllers/user_controller.js';
 import { loginController } from './controllers/login_controller.js';
 import { filmController } from './controllers/film_controller.js';
+import { listController } from './controllers/lists_controller.js';
 
 
 const app = express();
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 });
 
 userController(app);
+listController(app);
 loginController(app);
 filmController(app);
 
