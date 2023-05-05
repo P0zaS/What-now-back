@@ -5,6 +5,8 @@ import {
   updateList,
   createList,
   deleteList as dlList,
+  addFilmToList,
+  removeFilmToList
 } from "../repositories/lists_repository.js";
 import { findByUserUsername } from "../repositories/users_repository.js";
 
@@ -104,6 +106,51 @@ export function deleteList(list) {
           res(deletedList);
         })
         .catch((err) => rej("Error at delete list: " + JSON.stringify(err)));
+    } else {
+      rej({ error: "Syntax error" });
+    }
+  });
+}
+export function addFilm(body) {
+  return new Promise((res, rej) => {
+    if (body && body.list && body.film && body.list.id && body.film.id) {
+      findByListId(body.list.id)
+        .then((listFound) => {
+          console.log(listFound[0], 'founded');
+          addFilmToList(listFound[0], body.film)
+            .then((added) => {
+              res(added);
+            })
+            .catch((err) =>
+              rej("Error at add film to list: " + JSON.stringify(err))
+            );
+        })
+        .catch((err) =>
+          rej("Error at update list (list not found): " + JSON.stringify(err))
+        );
+    } else {
+      rej({ error: "Syntax error" });
+    }
+  });
+}
+export function removeFilm(body) {
+  return new Promise((res, rej) => {
+    if (body && body.list && body.film && body.list.id && body.film.id) {
+      findByListId(body.list.id)
+        .then((listFound) => {
+          console.log(listFound[0], 'founded');
+
+          removeFilmToList(listFound[0], body.film)
+            .then((added) => {
+              res(added);
+            })
+            .catch((err) =>
+              rej("Error at remove film to list: " + JSON.stringify(err))
+            );
+        })
+        .catch((err) =>
+          rej("Error at update list (list not found): " + JSON.stringify(err))
+        );
     } else {
       rej({ error: "Syntax error" });
     }

@@ -26,21 +26,22 @@ export function getAll() {
   });
 }
 export function getAllByUserId(userId) {
-    console.log(userId);
-    return new Promise((resolve, reject) => {
-      let foundItems = [];
-      let [client, collection] = connect();
-      collection
-        .find({ userId: userId })
-        .forEach((lists) => foundItems.push(lists))
-        .then(() => {
-          client.close();
-          resolve(foundItems);
-        });
-    });
-  }
+  console.log(userId);
+  return new Promise((resolve, reject) => {
+    let foundItems = [];
+    let [client, collection] = connect();
+    collection
+      .find({ userId: userId })
+      .forEach((lists) => foundItems.push(lists))
+      .then(() => {
+        client.close();
+        resolve(foundItems);
+      });
+  });
+}
 
 export function findByListId(Id) {
+  console.log(Id);
   return new Promise((resolve, reject) => {
     let [client, collection] = connect();
     collection
@@ -54,26 +55,29 @@ export function findByListId(Id) {
 }
 
 export function updateList(list) {
-    console.log(list, '2');
   return new Promise((resolve, reject) => {
     let [client, collection] = connect();
-    collection
-      .replaceOne(
-        { _id: new ObjectId(list.list.id) },
-        {
+    collection.updateOne(
+      { _id: new ObjectId(list.list.id) },
+      {
+        $set: {
           userId: list.userId,
           name: list.list.name,
           description: list.list.description,
           type: list.list.type,
-          styles: { bgColor: list.list.styles.bgColor, txtColor: list.list.styles.txtColor }
-        }
-      )
-      .then((savedDocument) => {
-        console.log(savedDocument);
-        client.close();
-        resolve({ doc: savedDocument, id: list.id });
-      })
-      .catch((err) => reject(err));
+          styles: {
+            bgColor: list.list.styles.bgColor,
+            txtColor: list.list.styles.txtColor,
+          },
+        },
+      }
+    ).then((savedDocument) => {
+      console.log(savedDocument);
+      client.close();
+      resolve({ doc: savedDocument, id: list.id });
+    })
+    .catch((err) => reject(err));
+    
   });
 }
 export function deleteList(list) {
@@ -89,14 +93,52 @@ export function deleteList(list) {
   });
 }
 export function createList(list) {
-    console.log(list);
+  console.log(list);
+  list.films = [];
   return new Promise((resolve, reject) => {
     let [client, collection] = connect();
     collection
       .insertOne(list)
       .then((savedDocument) => {
         client.close();
-        resolve({savedDoc: savedDocument});
+        resolve({ savedDoc: savedDocument });
+      })
+      .catch((err) => reject(err));
+  });
+}
+export function addFilmToList(list, film) {
+  return new Promise((resolve, reject) => {
+    console.log(list, 'a');
+    list.films.push(film);
+    console.log(list, 'b');
+    let [client, collection] = connect();
+    collection
+      .updateOne({"_id": list._id, "userId": list.userId}, {
+        $set:{
+         "films": list.films
+        }
+      })
+      .then((savedDocument) => {
+        client.close();
+        resolve({ savedDoc: savedDocument });
+      })
+      .catch((err) => reject(err));
+  });
+}
+export function removeFilmToList(list, film) {
+  return new Promise((resolve, reject) => {
+    list.films[list.films.findIndex(x => x.id == film.id)] = null;
+    list.films = list.films.filter(x => x != null);
+    let [client, collection] = connect();
+    collection
+      .updateOne({"_id": list._id, "userId": list.userId}, {
+        $set:{
+         "films": list.films
+        }
+      })
+      .then((savedDocument) => {
+        client.close();
+        resolve({ savedDoc: savedDocument });
       })
       .catch((err) => reject(err));
   });

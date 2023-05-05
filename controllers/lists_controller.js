@@ -1,18 +1,22 @@
 import {
-    getAllList,
-    getAllListByUser,
-    getListbyId,
-    updateaList,
-    insertList,
-    deleteList
-  } from "../services/lists_service.js";
+  getAllList,
+  getAllListByUser,
+  getListbyId,
+  updateaList,
+  insertList,
+  deleteList,
+  addFilm,
+  removeFilm
+} from "../services/lists_service.js";
 
 export function listController(app) {
   app.get("/lists", (req, res) => {
     getAllList().then((lists) => res.send(JSON.stringify(lists)));
   });
   app.get("/listByUser/:user", (req, res) => {
-    getAllListByUser({username: req.params.user}).then((lists) => res.send(JSON.stringify(lists)));
+    getAllListByUser({ username: req.params.user }).then((lists) =>
+      res.send(JSON.stringify(lists))
+    );
   });
   app.get("/list/:id", (req, res) => {
     getListbyId(req.params.id)
@@ -44,6 +48,28 @@ export function listController(app) {
   });
   app.delete("/list", (req, res) => {
     deleteList(req.body)
+      .then((list) => {
+        res.status(200);
+        res.send(list);
+      })
+      .catch((err) => {
+        res.status(400);
+        res.send(err);
+      });
+  });
+  app.put("/addFilm", (req, res) => {
+    addFilm(req.body)
+      .then((list) => {
+        res.status(200);
+        res.send(list);
+      })
+      .catch((err) => {
+        res.status(400);
+        res.send(err);
+      });
+  });
+  app.delete("/addFilm", (req, res) => {
+    removeFilm(req.body)
       .then((list) => {
         res.status(200);
         res.send(list);
