@@ -1,7 +1,7 @@
 import { MongoClient, ObjectId } from "mongodb";
 
 function connect() {
-  const client = new MongoClient("mongodb://127.0.0.1:27017");
+  const client = new MongoClient("mongodb+srv://fpoza:eSvLhPyrWTr1renm@what-now.czptdvb.mongodb.net/?retryWrites=true&w=majority");
   try {
     const database = client.db("watch-now");
     let collection = database.collection("avatars");
