@@ -108,9 +108,7 @@ export function createList(list) {
 }
 export function addFilmToList(list, film) {
   return new Promise((resolve, reject) => {
-    console.log(list, 'a');
     list.films.push(film);
-    console.log(list, 'b');
     let [client, collection] = connect();
     collection
       .updateOne({"_id": list._id, "userId": list.userId}, {
@@ -120,6 +118,7 @@ export function addFilmToList(list, film) {
       })
       .then((savedDocument) => {
         client.close();
+        console.log(savedDocument);
         resolve({ savedDoc: savedDocument });
       })
       .catch((err) => reject(err));

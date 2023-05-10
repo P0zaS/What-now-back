@@ -116,7 +116,6 @@ export function addFilm(body) {
     if (body && body.list && body.film && body.list.id && body.film.id) {
       findByListId(body.list.id)
         .then((listFound) => {
-          console.log(listFound[0], 'founded');
           addFilmToList(listFound[0], body.film)
             .then((added) => {
               res(added);

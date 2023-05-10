@@ -58,6 +58,7 @@ export function listController(app) {
       });
   });
   app.put("/addFilm", (req, res) => {
+    console.log(req.body);
     addFilm(req.body)
       .then((list) => {
         res.status(200);
@@ -69,6 +70,7 @@ export function listController(app) {
       });
   });
   app.delete("/addFilm", (req, res) => {
+    console.log(req.body);
     removeFilm(req.body)
       .then((list) => {
         res.status(200);
